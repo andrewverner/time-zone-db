@@ -3,17 +3,17 @@
 namespace DK\Components\TimeZoneDB\ResponseParsers;
 
 /**
- * Interface ResponseParserInterface
+ * Interface ResponseParserStrategyInterface
  * @package DK\Components\TimeZoneDB\ResponseParsers
  */
-interface ResponseParserInterface
+interface ResponseParserStrategyInterface
 {
     /** @return string */
     public function getResponseFormat(): string;
 
     /**
      * @param string $data
-     * @return array
+     * @return array|null
      */
-    public function parse(string $data): array;
+    public function parse(string $data): ?array;
 }

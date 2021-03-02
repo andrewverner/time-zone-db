@@ -9,21 +9,45 @@ class CityRepository implements CityRepositoryInterface
     /** @var \PDO */
     private \PDO $pdo;
 
+    /**
+     * CityRepository constructor.
+     * @param \PDO $pdo
+     */
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
     /** @inheritDoc */
-    public function getCityById(int $id): ?CityDTO
+    public function getCityById(string $id): ?CityDTO
     {
-        $query = 'SELECT * FROM city WHERE id = ?';
-        $statement = $this->pdo->prepare($query, [$id]);
+        $statement = $this->pdo->prepare('SELECT * FROM city WHERE id = :id');
+        $statement->execute(['id' => $id]);
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
-        $data = $statement->execute($statement);
+        return $result ? new CityDTO($result) : null;
+    }
 
-        var_dump($data);
+    /** @inheritDoc */
+    public function getAllCities(): array
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM city');
+        $statement->execute();
+        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        return new CityDTO([]);
+        $data = [];
+        foreach ($rows as $row) {
+            $data[] = new CityDTO($row);
+        }
+
+        return $data;
+    }
+
+    /** @inheritDoc */
+    public function updateGtmDiffById(string $id, int $gtmDiff): bool
+    {
+        $statement = $this->pdo->prepare('UPDATE city SET gtm_diff = :gtmDiff WHERE id = :id');
+
+        return $statement->execute(['gtmDiff' => $gtmDiff, 'id' => $id]);
     }
 }

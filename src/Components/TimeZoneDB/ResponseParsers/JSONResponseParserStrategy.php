@@ -2,7 +2,11 @@
 
 namespace DK\Components\TimeZoneDB\ResponseParsers;
 
-class JSONResponseParser implements ResponseParserInterface
+/**
+ * Class JSONResponseParserStrategy
+ * @package DK\Components\TimeZoneDB\ResponseParsers
+ */
+class JSONResponseParserStrategy implements ResponseParserStrategyInterface
 {
     /** @inheritDoc */
     public function getResponseFormat(): string
@@ -11,7 +15,7 @@ class JSONResponseParser implements ResponseParserInterface
     }
 
     /** @inheritDoc */
-    public function parse(string $data): array
+    public function parse(string $data): ?array
     {
         return json_decode($data, true);
     }

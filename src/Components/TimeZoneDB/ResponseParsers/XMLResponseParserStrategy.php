@@ -2,7 +2,11 @@
 
 namespace DK\Components\TimeZoneDB\ResponseParsers;
 
-class XMLResponseParser implements ResponseParserInterface
+/**
+ * Class XMLResponseParserStrategy
+ * @package DK\Components\TimeZoneDB\ResponseParsers
+ */
+class XMLResponseParserStrategy implements ResponseParserStrategyInterface
 {
     /** @inheritDoc */
     public function getResponseFormat(): string
@@ -11,7 +15,7 @@ class XMLResponseParser implements ResponseParserInterface
     }
 
     /** @inheritDoc */
-    public function parse(string $data): array
+    public function parse(string $data): ?array
     {
         $xml = simplexml_load_string($data);
 

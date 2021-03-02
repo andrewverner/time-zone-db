@@ -11,8 +11,18 @@ use DK\Repositories\DTO\CityDTO;
 interface CityRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string $id
      * @return CityDTO|null
      */
-    public function getCityById(int $id): ?CityDTO;
+    public function getCityById(string $id): ?CityDTO;
+
+    /** @return CityDTO[] */
+    public function getAllCities(): array;
+
+    /**
+     * @param string $id
+     * @param int $gtmDiff
+     * @return bool
+     */
+    public function updateGtmDiffById(string $id, int $gtmDiff): bool;
 }

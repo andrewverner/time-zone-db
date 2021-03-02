@@ -2,7 +2,7 @@
 
 namespace DK\Components\TimeZoneDB\DTO;
 
-class GetTimeZoneDTO
+class TimeZoneDTO
 {
     /** @var string */
     private $status;

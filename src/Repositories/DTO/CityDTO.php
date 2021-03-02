@@ -4,17 +4,20 @@ namespace DK\Repositories\DTO;
 
 class CityDTO
 {
-    /** @var int */
-    private int $id;
+    /** @var string */
+    private string $id;
 
     /** @var string */
     private string $name;
 
-    /** @var float */
-    private float $latitude;
+    /** @var string */
+    private string $latitude;
 
-    /** @var float */
-    private float $longitude;
+    /** @var string */
+    private string $longitude;
+
+    /** @var int */
+    private int $gtm_diff;
 
     /**
      * CityDTO constructor.
@@ -31,15 +34,33 @@ class CityDTO
         }
     }
 
-    /** @return float */
-    public function getLatitude(): float
+    /** @return string */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /** @return string */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /** @return string */
+    public function getLatitude(): string
     {
         return $this->latitude;
     }
 
-    /** @return float */
-    public function getLongitude(): float
+    /** @return string */
+    public function getLongitude(): string
     {
         return $this->longitude;
+    }
+
+    /** @return int */
+    public function getGtmDiff(): int
+    {
+        return $this->gtm_diff;
     }
 }

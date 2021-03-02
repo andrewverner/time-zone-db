@@ -2,27 +2,28 @@
 
 namespace DK\Components\TimeZoneDB\Client;
 
-use DK\Components\TimeZoneDB\DTO\GetTimeZoneDTO;
+use DK\Components\TimeZoneDB\DTO\TimeZoneDTO;
 use DK\Components\TimeZoneDB\Exceptions\TimeZoneDBException;
 use DK\Components\TimeZoneDB\Factories\RequestFactoryInterface;
-use DK\Components\TimeZoneDB\ResponseParsers\ResponseParserInterface;
+use DK\Components\TimeZoneDB\ResponseParsers\ResponseParserStrategyInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class TimeZoneDBClient
+ * Class TimeZoneDBFacade
  * @package DK\Components\TimeZoneDB
  */
-final class TimeZoneDBClient
+final class TimeZoneDBFacade implements TimeZoneDBFacadeInterface
 {
-    /** @var string */
-    private const API_KEY = '0QS917JBBYT7';
-
     /** @var string */
     private const ENDPOINT_URL = 'http://api.timezonedb.com/v2.1';
 
+    /** @var string */
     private const REQUEST_GET_TIME_ZONE = 'get-time-zone';
+
+    /** @var string */
+    private $apiKey;
 
     /** @var ClientInterface */
     private ClientInterface $httpClient;
@@ -30,39 +31,37 @@ final class TimeZoneDBClient
     /** @var RequestFactoryInterface */
     private RequestFactoryInterface $requestFactory;
 
-    /** @var ResponseParserInterface */
-    private ResponseParserInterface $responseParser;
+    /** @var ResponseParserStrategyInterface */
+    private ResponseParserStrategyInterface $responseParser;
 
     /**
-     * TimeZoneDBClient constructor.
+     * TimeZoneDBFacade constructor.
      * @param ClientInterface $httpClient
      * @param RequestFactoryInterface $requestFactory
-     * @param ResponseParserInterface $responseParser
+     * @param ResponseParserStrategyInterface $responseParser
+     * @param string $apiKey
      */
     public function __construct(
         ClientInterface $httpClient,
         RequestFactoryInterface $requestFactory,
-        ResponseParserInterface $responseParser
+        ResponseParserStrategyInterface $responseParser,
+        string $apiKey
     ) {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
         $this->responseParser = $responseParser;
+        $this->apiKey = $apiKey;
     }
 
-    /**
-     * @param float $lat
-     * @param float $lng
-     * @return GetTimeZoneDTO
-     * @throws TimeZoneDBException
-     */
-    public function getTimeZoneByPosition(float $lat, float $lng): GetTimeZoneDTO
+    /** @inheritDoc */
+    public function getTimeZoneByPosition(float $lat, float $lng): TimeZoneDTO
     {
         $requestUri = sprintf(
             '%s/%s?%s',
             self::ENDPOINT_URL,
             self::REQUEST_GET_TIME_ZONE,
             http_build_query([
-                'key' => self::API_KEY,
+                'key' => $this->apiKey,
                 'format' => $this->responseParser->getResponseFormat(),
                 'by' => 'position',
                 'lat' => $lat,
@@ -74,23 +73,33 @@ final class TimeZoneDBClient
 
         try {
             $response = $this->sendRequest($request);
-            $data = $this->responseParser->parse($response->getBody()->getContents());
-            $dto = new GetTimeZoneDTO($data);
+            $responseContent = $response->getBody()->getContents();
+            $data = $this->responseParser->parse($responseContent);
+            if (!$data) {
+                throw new \Exception(sprintf('Invalid response data format: %s', $responseContent));
+            }
+
+            $dto = new TimeZoneDTO($data);
 
             if ($dto->getStatus() !== 'OK') {
-                throw new TimeZoneDBException('Invalid response status from the service');
+                throw new \Exception('Invalid response status from the service');
             }
 
             return $dto;
         } catch (\Throwable $exception) {
             throw new TimeZoneDBException(sprintf(
-                'An error has occurred while sending a request: [%d] %s',
+                'An error has occurred: [%d] %s',
                 $exception->getCode(),
                 $exception->getMessage()
             ));
         }
     }
 
+    /**
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws \Psr\Http\Client\ClientExceptionInterface
+     */
     private function sendRequest(RequestInterface $request): ResponseInterface
     {
         return $this->httpClient->sendRequest($request);
