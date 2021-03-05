@@ -16,11 +16,11 @@ class CityDTO
     /** @var string */
     private string $longitude;
 
-    /** @var int */
-    private int $gtm_diff;
+    /** @var ?int */
+    private ?int $gtm_diff;
 
     /** @var int */
-    private $dst;
+    private int $dst;
 
     /**
      * CityDTO constructor.

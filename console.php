@@ -8,7 +8,7 @@ $facade = new \DK\Components\TimeZoneDB\Client\TimeZoneDBFacade(
     'apiKey'
 );
 
-$pdo = new PDO('mysql:dbname=mirai;host=localhost', 'root', 'password');
+$pdo = new PDO('mysql:dbname=dbname;host=localhost', 'root', 'password');
 $cityRepository = new \DK\Repositories\CityRepository($pdo);
 $client = new \DK\Components\TimeZoneDB\TimeZoneDBClient($facade, $cityRepository);
 

@@ -90,7 +90,23 @@ class TimeZoneDBTest extends Unit
         $this->assertSame($utcTimeStamp, $converter->getUtcTimeByCityId('someId', $timeStamp)->format('Y-m-d H:i:s'));
     }
 
-    private function getCityRepositoryMock()
+    public function testTimeZoneConverterWithDst()
+    {
+        $cityRepository = $this->getCityRepositoryMock(1);
+        $converter = new TimeZoneConverter($cityRepository);
+        $city = $cityRepository->getCityById('someId');
+
+        $timeStamp = new \DateTimeImmutable();
+        $localTimeStamp = $timeStamp->setTimestamp($timeStamp->getTimestamp() + $city->getGtmDiff())->modify('+ 1 hour')
+            ->format('Y-m-d H:i:s');
+        $utcTimeStamp = $timeStamp->setTimestamp($timeStamp->getTimestamp() - $city->getGtmDiff())->modify('+ 1 hour')
+            ->format('Y-m-d H:i:s');
+
+        $this->assertSame($localTimeStamp, $converter->getLocalCityTimeByCityId('someId', $timeStamp)->format('Y-m-d H:i:s'));
+        $this->assertSame($utcTimeStamp, $converter->getUtcTimeByCityId('someId', $timeStamp)->format('Y-m-d H:i:s'));
+    }
+
+    private function getCityRepositoryMock($dst = 0)
     {
         $cityRepository = $this->createMock(CityRepositoryInterface::class);
         $cityDTO = new CityDTO([
@@ -99,6 +115,7 @@ class TimeZoneDBTest extends Unit
             'latitude' => 50,
             'longitude' => -25,
             'gtm_diff' => -18000,
+            'dst' => $dst,
         ]);
         $cityRepository->method('getCityById')->willReturn($cityDTO);
 
