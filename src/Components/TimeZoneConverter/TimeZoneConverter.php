@@ -35,8 +35,9 @@ class TimeZoneConverter
         if (!$city || is_null($city->getGtmDiff())) {
             return null;
         }
+        $stamp = $timeStamp->setTimestamp($timeStamp->getTimestamp() + $city->getGtmDiff());
 
-        return $timeStamp->setTimestamp($timeStamp->getTimestamp() + $city->getGtmDiff());
+        return $city->getDst() ? $stamp->modify('+ 1 hour') : $stamp;
     }
 
     /**
@@ -52,7 +53,8 @@ class TimeZoneConverter
         if (!$city || is_null($city->getGtmDiff())) {
             return null;
         }
+        $stamp = $timeStamp->setTimestamp($timeStamp->getTimestamp() - $city->getGtmDiff());
 
-        return $timeStamp->setTimestamp($timeStamp->getTimestamp() - $city->getGtmDiff());
+        return $city->getDst() ? $stamp->modify('+ 1 hour') : $stamp;
     }
 }

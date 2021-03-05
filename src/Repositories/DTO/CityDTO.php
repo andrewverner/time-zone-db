@@ -19,6 +19,9 @@ class CityDTO
     /** @var int */
     private int $gtm_diff;
 
+    /** @var int */
+    private $dst;
+
     /**
      * CityDTO constructor.
      * @param array $data
@@ -62,5 +65,11 @@ class CityDTO
     public function getGtmDiff(): int
     {
         return $this->gtm_diff;
+    }
+
+    /** @return int */
+    public function getDst(): int
+    {
+        return $this->dst;
     }
 }

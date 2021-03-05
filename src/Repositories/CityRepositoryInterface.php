@@ -22,7 +22,8 @@ interface CityRepositoryInterface
     /**
      * @param string $id
      * @param int $gtmDiff
+     * @param int $dst
      * @return bool
      */
-    public function updateGtmDiffById(string $id, int $gtmDiff): bool;
+    public function updateGtmDiffAndDstById(string $id, int $gtmDiff, int $dst = 0): bool;
 }

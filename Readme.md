@@ -47,7 +47,7 @@ $cityRepository->getAllCities();
 $cityRepository->getCityById('80defa05-74a0-4624-9d8d-d275407f6f11');
 
 //Обновление смещения относительно UTC по идентификатору
-$cityRepository->updateGtmDiffById('80defa05-74a0-4624-9d8d-d275407f6f11', -18000);
+$cityRepository->updateGtmDiffAndDstById('80defa05-74a0-4624-9d8d-d275407f6f11', -18000);
 ```
 
 ### Конвертер временных зон

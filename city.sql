@@ -5,6 +5,7 @@ CREATE TABLE `city` (
     `latitude` decimal(7,4) NOT NULL,
     `longitude` decimal(7,4) NOT NULL,
     `gtm_diff` int,
+    `dst` int NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     KEY `city_country_iso3_IDX` (`country_iso3`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -44,10 +44,10 @@ class CityRepository implements CityRepositoryInterface
     }
 
     /** @inheritDoc */
-    public function updateGtmDiffById(string $id, int $gtmDiff): bool
+    public function updateGtmDiffAndDstById(string $id, int $gtmDiff, int $dst = 0): bool
     {
-        $statement = $this->pdo->prepare('UPDATE city SET gtm_diff = :gtmDiff WHERE id = :id');
+        $statement = $this->pdo->prepare('UPDATE city SET gtm_diff = :gtmDiff, dst = :dst WHERE id = :id');
 
-        return $statement->execute(['gtmDiff' => $gtmDiff, 'id' => $id]);
+        return $statement->execute(['gtmDiff' => $gtmDiff, 'dst' => $dst, 'id' => $id]);
     }
 }

@@ -23,7 +23,7 @@ foreach ($cities as $city) {
         continue;
     }
 
-    if (!$cityRepository->updateGtmDiffById($city->getId(), $timeZoneData->getGmtOffset())) {
+    if (!$cityRepository->updateGtmDiffAndDstById($city->getId(), $timeZoneData->getGmtOffset(), $timeZoneData->getDst())) {
         echo sprintf('Update for city %s has been failed', $city->getId()) . PHP_EOL;
     }
 }
